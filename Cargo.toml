@@ -1,0 +1,8 @@
+[package]
+name = "rusty-file-explorer"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+gpui = "0.2.2"
+anyhow = "1.0.104"
