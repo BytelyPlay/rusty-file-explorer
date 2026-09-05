@@ -1,0 +1,11 @@
+import { MenuEnum } from "MenuEnum.slint";
+import { FilesMenu } from "FilesMenu.slint";
+
+export component AppWindow inherits Window {
+    in property<MenuEnum> menu;
+
+    if (menu == MenuEnum.FilesMenu) : FilesMenu {
+        width: parent.width;
+        height: parent.height;
+    }
+}
