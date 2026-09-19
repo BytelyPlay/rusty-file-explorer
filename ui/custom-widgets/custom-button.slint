@@ -1,0 +1,34 @@
+// TODO: Put this in its own library.
+
+import { Theme } from "../theme.slint";
+export component CustomButton {
+    callback on_click <=> touch.clicked;
+
+    in property <brush> background;
+    in property <image> icon <=> button_icon.source;
+    in property <bool> should_react_on_hover: true;
+    in property <brush> border <=> rect.border-color;
+    in property <length> border_width <=> rect.border-width;
+
+    out property <bool> is_hovered <=> touch.has-hover;
+
+    rect := Rectangle {
+        height: 100%;
+        width: 100%;
+
+        border-radius: Theme.round_corner_border_radius;
+
+        background: is_hovered && should_react_on_hover ? 
+        parent.background.darker(0.1) : 
+        parent.background;
+    }
+
+    button_icon := Image {
+        height: 100%;
+        width: 100%;
+    }
+    touch := TouchArea {
+        height: 100%;
+        width: 100%;
+    }
+}
