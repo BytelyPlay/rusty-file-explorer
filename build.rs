@@ -1,15 +1,15 @@
-use std::path::{Path, PathBuf};
-
 use slint_build::CompileError;
+use constcat::concat;
 
 fn main() {
     compile_all_slint().expect(".slint files were unable to compile")
 }
 
 fn compile_all_slint() -> Result<(), CompileError> {
-    const UI_FOLDER: &'static str = "ui"; 
-    // TODO: Figure out how to do this without hardcoding the ui folder, use a constant for the ui folder
-    const MAIN_SLINT_FILE: &'static str = "ui/AppWindow.slint";
+    const UI_FOLDER: &str = "ui"; 
+    const MAIN_SLINT_FILE: &str = concat!(
+        UI_FOLDER, "/main-window.slint"
+    );
 
     let conf = 
         slint_build::CompilerConfiguration::new()
