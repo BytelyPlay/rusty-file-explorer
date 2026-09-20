@@ -12,26 +12,19 @@ export component MainWindow inherits Window {
         "file_11.txt", "file_12.txt"
     ];
 
-    for file_name[i] in file_names : FsEntry {
-        property <int> max_files_before_new_line: Math.floor(size_of_usable_window_width / Theme.width_of_file);
-        property <length> size_of_usable_window_width: parent.width - Theme.width_of_file;
-
-        property <length> where: (Math.mod(i, max_files_before_new_line) 
-        * (64 + 12) * 1px) + 6px;
+    FlexboxLayout {
+        spacing-horizontal: 12px;
+        spacing-vertical: 0px;
         
-        property <int> current_line: Math.floor(i /
-                max_files_before_new_line
-            );
+        cross-axis-line-alignment: start;
 
-        width: Theme.width_of_file;
-        height: Theme.height_of_file;
+        padding: 6px;
 
-        x: where;
-        y: Theme.height_of_file * 
-        (
-            current_line
-        );
-
-        name: file_name;
+        for file_name[i] in file_names : FsEntry {
+            width: Theme.width_of_file;
+            height: Theme.height_of_file;
+ 
+            name: file_name;
+        }
     }
 }
