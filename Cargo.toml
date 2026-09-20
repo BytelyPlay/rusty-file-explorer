@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-# slint = "1.17.1" TODO: Use egui, not slint
+slint = "1.17.1"
 anyhow = "1.0.104"
 
 [build-dependencies]
