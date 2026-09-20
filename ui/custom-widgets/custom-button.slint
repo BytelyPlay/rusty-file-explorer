@@ -6,9 +6,12 @@ export component CustomButton {
 
     in property <brush> background;
     in property <image> icon <=> button_icon.source;
+    // This isn't very clear, should it do stuff when it is hovered? If true, it will do stuff, if not, it won't.
+    // It was made so that for the people who want to have custom behavior.
     in property <bool> should_react_on_hover: true;
     in property <brush> border <=> rect.border-color;
     in property <length> border_width <=> rect.border-width;
+    in property <length> border_radius: Theme.round_corner_border_radius;
 
     out property <bool> is_hovered <=> touch.has-hover;
 
@@ -16,7 +19,7 @@ export component CustomButton {
         height: 100%;
         width: 100%;
 
-        border-radius: Theme.round_corner_border_radius;
+        border-radius: border_radius;
 
         background: is_hovered && should_react_on_hover ? 
         parent.background.darker(0.1) : 
@@ -30,5 +33,7 @@ export component CustomButton {
     touch := TouchArea {
         height: 100%;
         width: 100%;
+        
+        mouse-cursor: is_hovered ? MouseCursor.pointer : MouseCursor.default;
     }
 }

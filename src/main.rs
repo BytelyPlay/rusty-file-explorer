@@ -1,3 +1,6 @@
+use std::rc::Rc;
+use slint::{Model, ModelRc, SharedString, VecModel};
+
 slint::include_modules!();
 
 fn main() {

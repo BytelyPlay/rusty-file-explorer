@@ -1,8 +1,37 @@
 import { FsEntry } from "fs-entry.slint";
+import { Theme } from "theme.slint";
 
 export component MainWindow inherits Window {
-    FsEntry {
-        width: 64px;
-        height: 64px;
+    // TODO: Do this in Rust code with ACTUAL files.
+    in property <[string]> file_names: [
+        "file_1.txt", "file_2.txt",
+        "file_3.txt", "file_4.txt",
+        "file_5.txt", "file_6.txt",
+        "file_7.txt", "file_8.txt",
+        "file_9.txt", "file_10.txt",
+        "file_11.txt", "file_12.txt"
+    ];
+
+    for file_name[i] in file_names : FsEntry {
+        property <int> max_files_before_new_line: Math.floor(size_of_usable_window_width / Theme.width_of_file);
+        property <length> size_of_usable_window_width: parent.width - Theme.width_of_file;
+
+        property <length> where: (Math.mod(i, max_files_before_new_line) 
+        * (64 + 12) * 1px) + 6px;
+        
+        property <int> current_line: Math.floor(i /
+                max_files_before_new_line
+            );
+
+        width: Theme.width_of_file;
+        height: Theme.height_of_file;
+
+        x: where;
+        y: Theme.height_of_file * 
+        (
+            current_line
+        );
+
+        name: file_name;
     }
 }
