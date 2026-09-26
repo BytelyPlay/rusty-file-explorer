@@ -1,0 +1,28 @@
+import { FsEntryData } from "../structs/fs-entry-data.slint";
+import { FsEntry } from "fs-entry.slint";
+import { Theme } from "../theme.slint";
+
+export component FilesBox {
+    // The first one is the one that was clicked, the second one is all the entries, you can modify the second one to modify the listed files.
+    callback fs_entry_clicked(FsEntryData);
+    // TODO: Do this in Rust code with ACTUAL files.
+    in property <[FsEntryData]> files;
+
+    FlexboxLayout {
+        spacing-horizontal: 12px;
+        spacing-vertical: 0px;
+        
+        cross-axis-line-alignment: start;
+
+        padding: 6px;
+
+        for file[i] in files : FsEntry {
+            width: Theme.width_of_file;
+            height: Theme.height_of_file;
+ 
+            fs_entry_data: file;
+
+            on_click(clicked_entry) => fs_entry_clicked(clicked_entry);
+        }
+    }
+}

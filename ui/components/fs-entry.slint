@@ -1,0 +1,39 @@
+import { Button } from "std-widgets.slint";
+import { CustomButton } from "../custom-widgets/custom-button.slint";
+import { FsEntryData } from "../structs/fs-entry-data.slint";
+
+export component FsEntry {
+    callback on_click(FsEntryData);
+
+    in property <FsEntryData> fs_entry_data;
+
+    // TODO: Add a property that specifies WHAT type of entry it is.
+
+    CustomButton {
+        width: 100%;
+        height: 80%;
+
+        background: transparent;
+
+        // TEMP
+        // TODO: Remove these after you add an icon.
+        border: black;
+        border_width: 1px;
+
+        icon: fs_entry_data.icon;
+
+        on_click => on_click(fs_entry_data);
+    }
+    Text {
+        width: 100%;
+        height: 20%;
+
+        font-size: parent.width / 10;
+
+        x: 0;
+        y: parent.height;
+
+        text: fs_entry_data.name;
+        overflow: elide;
+    }
+}
