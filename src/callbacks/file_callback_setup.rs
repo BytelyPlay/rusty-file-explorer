@@ -13,3 +13,7 @@ pub fn setup_callbacks(weak_main_window: Weak<MainWindow>) {
         error!("For some reason, weak pointer to the main window was not able to be upgraded.");
     }
 }
+
+fn setup_callbacks_internal(main_window: &MainWindow) {
+
+}

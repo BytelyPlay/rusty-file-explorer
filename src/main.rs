@@ -1,5 +1,6 @@
 pub mod callbacks;
 pub mod compiled_ui;
+pub mod utils;
 
 use slint::ComponentHandle;
 use crate::callbacks::file_callback_setup::setup_callbacks;
@@ -10,6 +11,7 @@ fn main() {
         .expect("Something went wrong creating the main window.");
 
     setup_callbacks(main_window.as_weak());
+    fill_initial_files(main_window)
 
     main_window
         .run()
