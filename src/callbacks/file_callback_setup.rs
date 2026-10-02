@@ -20,9 +20,3 @@ fn setup_callbacks_internal(main_window: &MainWindow) {
         }
     );
 }
-
-fn callback_internal<T>() -> Box<dyn T>
-where
-T: Fn(){
-
-}
