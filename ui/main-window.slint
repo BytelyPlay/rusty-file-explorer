@@ -2,18 +2,16 @@ import { FsEntry } from "components/fs-entry.slint";
 import { Theme } from "globals/theme.slint";
 import { FsEntryData } from "structs/fs-entry-data.slint";
 import { FilesBox } from "components/files-box.slint";
+import { Callbacks } from "globals/callbacks.slint";
+import { State } from "globals/state.slint";
 
-export { FsEntryData, FilesBox }
+export { FsEntryData, FilesBox, Callbacks, State }
 
 export component MainWindow inherits Window {
-    callback fs_entry_clicked(FsEntryData);
-
     preferred-height: 540px;
     preferred-width: 600px;
 
     FilesBox {
-        fs_entry_clicked(entry_clicked) => {
-            fs_entry_clicked(entry_clicked)
-        }
+        fs_entry_clicked(data) => Callbacks.fs_entry_clicked(data);
     }
 }
