@@ -1,6 +1,6 @@
 use slint::Weak;
 use crate::compiled_ui::MainWindow;
 
-pub fn fill_initial_files(window: Weak<MainWindow>) {
-    
+pub fn fill_initial_files(_window: Weak<MainWindow>) {
+    todo!();
 }

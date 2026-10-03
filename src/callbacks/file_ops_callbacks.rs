@@ -1,7 +1,7 @@
-use crate::compiled_ui::FsEntryData;
+use crate::compiled_ui::{FsEntryData, MainWindow};
 
 pub fn fs_entry_clicked(
-    fs_entry: FsEntryData
+    _fs_entry: FsEntryData,
+    _main_window: MainWindow
 ) {
-
 }
