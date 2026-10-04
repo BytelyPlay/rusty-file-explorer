@@ -1,6 +1,5 @@
-use slint::Weak;
-use crate::compiled_ui::MainWindow;
+use crate::utils::slint_helpers::app_context::AppContext;
 
-pub fn fill_initial_files(_window: Weak<MainWindow>) {
+pub fn fill_initial_files(_window: std::rc::Weak<AppContext>) {
     todo!();
 }

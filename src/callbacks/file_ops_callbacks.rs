@@ -1,7 +1,9 @@
-use crate::compiled_ui::{FsEntryData, MainWindow};
+use crate::compiled_ui::FsEntryData;
+use crate::utils::slint_helpers::app_context::AppContext;
+use std::rc::Rc;
 
 pub fn fs_entry_clicked(
     _fs_entry: FsEntryData,
-    _main_window: MainWindow
+    _main_window: Rc<AppContext>
 ) {
 }

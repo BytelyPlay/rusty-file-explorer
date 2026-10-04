@@ -1,44 +1,45 @@
+use std::rc::Rc;
 use log::{error, warn};
-use slint::{ComponentHandle, Weak};
 use crate::callbacks::file_ops_callbacks;
 
-use crate::compiled_ui::{Callbacks, FsEntryData, MainWindow};
+use crate::compiled_ui::{FsEntryData};
+use crate::utils::slint_helpers::app_context::AppContext;
 
-pub fn setup_callbacks(weak_main_window: Weak<MainWindow>) {
-    if let Some(main_window) = weak_main_window.upgrade() {
-        setup_callbacks_internal(&main_window);
+pub fn setup_callbacks(weak_ctx: std::rc::Weak<AppContext>) {
+    if let Some(ctx) = weak_ctx.upgrade() {
+        setup_callbacks_internal(ctx.clone());
     } else {
-        error!("For some reason, weak pointer to the main window was not able to be upgraded.");
+        error!("For some reason, weak pointer to the main window was not able to be upgraded. \
+        Cannot setup callbacks.");
     }
 }
 
-fn setup_callbacks_internal(main_window: &MainWindow) {
-    let weak_main_window = main_window.as_weak();
-    
-    main_window.global::<Callbacks>().on_fs_entry_clicked(
-        move |fs_entry: FsEntryData| {
-            let opt_main_window = main_window_as_strong_or_log(
-                weak_main_window.clone()
+fn setup_callbacks_internal(ctx: Rc<AppContext>) {
+    let weak_ctx = Rc::downgrade(&ctx);
+
+    let closure = move |fs_entry: FsEntryData| {
+        let opt_app_context = weak_ctx.upgrade();
+
+        if let Some(app_context) = opt_app_context {
+            file_ops_callbacks::fs_entry_clicked(
+                fs_entry, app_context.clone()
             );
-            
-            if let Some(main_window) = opt_main_window {
-                file_ops_callbacks::fs_entry_clicked(
-                    fs_entry, main_window
-                );
-            }
         }
+    };
+    ctx.get_callbacks().on_fs_entry_clicked(
+        closure
     );
 }
 
-fn main_window_as_strong_or_log(
-    weak_main_window: Weak<MainWindow>
-) -> Option<MainWindow> {
-    let opt_main_window = weak_main_window.upgrade();
+fn ctx_as_strong_or_log(
+    weak_ctx: std::rc::Weak<AppContext>
+) -> Option<Rc<AppContext>> {
+    let opt_ctx = weak_ctx.upgrade();
 
-    if opt_main_window.is_none() {
-        warn!("Couldn't upgrade Weak<MainWindow> while calling callback\
+    if opt_ctx.is_none() {
+        warn!("Couldn't upgrade Weak<AppContext> while calling callback\
         , this could mean that the \
-        callback was somehow called after the MainWindow went out of scope.")
+        callback was somehow called after the AppContext went out of scope.")
     }
-    opt_main_window
+    opt_ctx
 }
