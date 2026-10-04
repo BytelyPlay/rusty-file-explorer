@@ -11,11 +11,11 @@ pub fn get_inner_vec_model<T: 'static>(
         .downcast_ref::<InnerVecModel<T>>()
         .cloned()
 }
-pub fn set_inner_model_to_vec_model<
+pub fn create_model_copy_with_vec_model<
     T: std::clone::Clone + 'static
 >(
-    model_rc: &mut ModelRc<T>
-) -> InnerVecModel<T> {
+    model_rc: &ModelRc<T>
+) -> ModelRc<T> {
     let files_vec: Vec<T> = model_rc.iter()
         .collect();
     let rc_files_vec_model = Rc::new(
@@ -23,8 +23,7 @@ pub fn set_inner_model_to_vec_model<
             files_vec
         )
     );
-    *model_rc = ModelRc::new(
+    ModelRc::new(
         rc_files_vec_model.clone()
-    );
-    rc_files_vec_model.clone()
+    )
 }

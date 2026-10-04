@@ -16,17 +16,22 @@ impl AppContext {
         self.main_window.global::<Callbacks>()
     }
     pub fn get_files(&self) -> model_rc_helpers::InnerVecModel<FsEntryData> {
-        let files_rc = &mut self.main_window.global::<State>()
+        let state = self.main_window.global::<State>();
+
+        let files_rc = self.main_window.global::<State>()
             .get_files();
+
         let opt_inner_vec_model = model_rc_helpers::get_inner_vec_model(
-            files_rc
+            &files_rc
         );
+
         if let Some(inner_vec_model) = opt_inner_vec_model {
             inner_vec_model
         } else {
-            model_rc_helpers::set_inner_model_to_vec_model(
-                files_rc
-            )
+            state.set_files(model_rc_helpers::create_model_copy_with_vec_model(
+                &files_rc
+            ));
+            // self.get_files()
         }
     }
 }
