@@ -1,6 +1,6 @@
 use crate::compiled_ui::{Callbacks, FsEntryData, MainWindow, State};
 use crate::utils::slint_helpers::model_rc_helpers;
-use slint::ComponentHandle;
+use slint::{ComponentHandle, Model, VecModel};
 
 pub struct AppContext {
     main_window: MainWindow
@@ -31,7 +31,9 @@ impl AppContext {
             state.set_files(model_rc_helpers::create_model_copy_with_vec_model(
                 &files_rc
             ));
-            // self.get_files()
+            Some(state.get_files()
+                .as_any()
+                .downcast_ref::<VecModel<FsEntryData>>())
         }
     }
 }
