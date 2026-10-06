@@ -9,7 +9,7 @@ pub fn setup_callbacks(weak_ctx: std::rc::Weak<AppContext>) {
     if let Some(ctx) = weak_ctx.upgrade() {
         setup_callbacks_internal(ctx.clone());
     } else {
-        error!("For some reason, weak pointer to the main window was not able to be upgraded. \
+        error!("For some reason, weak pointer to the AppContext was not able to be upgraded. \
         Cannot setup callbacks.");
     }
 }

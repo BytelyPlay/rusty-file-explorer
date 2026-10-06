@@ -1,6 +1,7 @@
 pub mod callbacks;
 pub mod compiled_ui;
 pub mod utils;
+pub mod errors;
 
 use std::rc::{Rc, Weak};
 use slint::ComponentHandle;
