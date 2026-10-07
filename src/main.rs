@@ -1,14 +1,13 @@
 pub mod callbacks;
 pub mod compiled_ui;
 pub mod utils;
-pub mod errors;
 
-use std::rc::{Rc, Weak};
-use slint::ComponentHandle;
 use crate::callbacks::file_callback_setup::setup_callbacks;
 use crate::compiled_ui::MainWindow;
 use crate::utils::fill_initial_files::fill_initial_files;
 use crate::utils::slint_helpers::app_context::AppContext;
+use slint::ComponentHandle;
+use std::rc::Rc;
 
 fn main() {
     let main_window = MainWindow::new()

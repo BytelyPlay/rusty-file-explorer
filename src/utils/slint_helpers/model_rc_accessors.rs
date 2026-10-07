@@ -1,39 +1,40 @@
+use std::iter::once;
 use slint::{Model, ModelError, ModelRc, VecModel};
 use std::rc::Rc;
-
+use log::error;
 // TODO: This should probably be in a separate "slint-helpers" library.
+
+// This is supposed to wrap a ModelRc<T> in a way, that it behaves almost exactly like a Vec<T>.
 pub struct ModelRcAccessor<T: Clone + 'static> {
-    model_rc_getter: fn() -> ModelRc<T>,
-    model_rc_setter: fn(model_rc: ModelRc<T>)
+    model_rc_getter: Box<dyn Fn() -> ModelRc<T>>,
+    model_rc_setter: Box<dyn Fn(ModelRc<T>)>
 }
 
 impl<T: Clone + 'static> ModelRcAccessor<T> {
+    pub fn new(
+        model_rc_getter: Box<dyn Fn() -> ModelRc<T>>,
+        model_rc_setter: Box<dyn Fn(ModelRc<T>)>
+    ) -> Self {
+        Self {
+            model_rc_getter,
+            model_rc_setter
+        }
+    }
     pub fn push(&self, value: T) {
         let model = (self.model_rc_getter)();
 
-        match model.push_row(value.clone()) {
-            Ok(ok) => {},
-            Err(err) => {
-                if err.eq(&ModelError::out_of_bounds(0)) {
-                    panic!(
-                        "This panic should NEVER be called. \
-                        push was called in ModelRcAccessor struct and the out_of_bounds error was thrown: {}",
-                        err
+        (self.model_rc_setter)(
+            ModelRc::new(
+                Rc::new(
+                    VecModel::from(
+                        model
+                            .iter()
+                            .chain(once(value))
+                            .collect::<Vec<T>>()
                     )
-                } else if err.eq(
-                    &ModelError::unsupported(
-                        &VecModel::from(vec![0])
-                    )
-                ) {
-                    self.make_mutable();
-
-                    model.push_row(value)
-                        .expect(format!("A ModelError was thrown after calling push after a \
-                        ModelError of type unsupported was thrown and it was made mutable: {}", err)
-                            .as_str())
-                }
-            }
-        }
+                )
+            )
+        )
     }
     pub fn get(&self, index: usize) -> Option<T> {
         (self.model_rc_getter)()
@@ -41,12 +42,15 @@ impl<T: Clone + 'static> ModelRcAccessor<T> {
     }
     /// This panics if you try to remove an index that doesn't exist.
     /// Please be aware of that.
+
+    // TODO: Redo all of these
+    /*
     pub fn remove_i(&self, index: usize) {
         let model = (self.model_rc_getter)();
         let result = model
             .remove_row(index);
         match result {
-            Ok(ok) => {},
+            Ok(_) => {},
             Err(err) => {
                 self.handle_remove_i_model_error(err);
                 model.remove_row(index)
@@ -119,4 +123,4 @@ impl<T: Clone + 'static> ModelRcAccessor<T> {
                     or a bug in Slint: {}", err)
         }
     }
-}
+} */

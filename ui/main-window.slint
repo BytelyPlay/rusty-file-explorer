@@ -12,6 +12,12 @@ export component MainWindow inherits Window {
     preferred-width: 600px;
 
     FilesBox {
+        x: parent.width * 0.2;
+
+        height: 60%;
+        width: 80%;
+
+        files: State.files;
         fs_entry_clicked(data) => Callbacks.fs_entry_clicked(data);
     }
 }

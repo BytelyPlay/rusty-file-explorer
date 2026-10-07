@@ -19,7 +19,9 @@ fn setup_callbacks_internal(ctx: Rc<AppContext>) {
     let weak_ctx = Rc::downgrade(&ctx);
 
     let closure = move |fs_entry: FsEntryData| {
-        if let Some(app_context) = ctx_as_strong_or_log(&weak_ctx) {
+        if let Some(app_context) = ctx_as_strong_or_log_for_callback(
+            &weak_ctx
+        ) {
             file_ops_callbacks::fs_entry_clicked(
                 fs_entry, app_context.clone()
             );
@@ -30,7 +32,7 @@ fn setup_callbacks_internal(ctx: Rc<AppContext>) {
     );
 }
 
-fn ctx_as_strong_or_log(
+fn ctx_as_strong_or_log_for_callback(
     weak_ctx: &std::rc::Weak<AppContext>
 ) -> Option<Rc<AppContext>> {
     let opt_ctx = weak_ctx.upgrade();
