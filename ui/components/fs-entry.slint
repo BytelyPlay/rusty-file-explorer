@@ -10,6 +10,9 @@ export component FsEntry {
     // TODO: Add a property that specifies WHAT type of entry it is.
 
     CustomButton {
+        y: 0;
+        x: 0;
+
         width: 100%;
         height: 80%;
 
@@ -28,10 +31,10 @@ export component FsEntry {
         width: 100%;
         height: 20%;
 
-        font-size: parent.width / 10;
+        font-size: 15px;
 
         x: 0;
-        y: parent.height;
+        y: parent.height * 0.8;
 
         text: fs_entry_data.name;
         overflow: elide;

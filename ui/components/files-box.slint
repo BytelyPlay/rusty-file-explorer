@@ -1,6 +1,7 @@
 import { FsEntryData } from "../structs/fs-entry-data.slint";
 import { FsEntry } from "fs-entry.slint";
 import { Theme } from "../globals/theme.slint";
+import { ScrollView } from "std-widgets.slint";
 
 export component FilesBox {
     // The first one is the one that was clicked, the second one is all the entries, you can modify the second one to modify the listed files.
@@ -8,21 +9,39 @@ export component FilesBox {
     // TODO: Do this in Rust code with ACTUAL files.
     in property <[FsEntryData]> files;
 
-    FlexboxLayout {
-        spacing-horizontal: 12px;
-        spacing-vertical: 0px;
+    Rectangle {
+        height: 100%;
+        width: 100%;
+
+        border-width: 4px;
+        border-color: black;
+
+        border-radius: Theme.round_corner_border_radius;
+    }
+
+    ScrollView {
+        height: 100%;
+        width: 100%;
         
-        cross-axis-line-alignment: start;
+        FlexboxLayout {
+            spacing-horizontal: 12px;
+            spacing-vertical: 0px;
 
-        padding: 6px;
+            cross-axis-line-alignment: start;
 
-        for file[i] in files : FsEntry {
-            width: Theme.width_of_file;
-            height: Theme.height_of_file;
- 
-            fs_entry_data: file;
+            padding: 6px;
 
-            on_click(clicked_entry) => fs_entry_clicked(clicked_entry);
+            padding-top: 6px;
+            padding-bottom: 12px;
+
+            for file[i] in files: FsEntry {
+                width: Theme.width_of_file;
+                height: Theme.height_of_file;
+
+                fs_entry_data: file;
+
+                on_click(clicked_entry) => fs_entry_clicked(clicked_entry);
+            }
         }
     }
 }

@@ -7,7 +7,8 @@ edition = "2024"
 slint = "1.18.1"
 anyhow = "1.0.104"
 log = "0.4.34"
-env_logger = "0.11.11"
+env_logger = "=0.11.11"
+dirs = "=7.0.0"
 
 [build-dependencies]
 slint-build = "1.18.1"

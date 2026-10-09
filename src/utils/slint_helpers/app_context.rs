@@ -33,6 +33,9 @@ impl AppContext {
             )
         )
     }
+    pub fn run_on_main_thread(&self, f: impl FnOnce()) {
+
+    }
 }
 impl Clone for AppContext {
     /// This doesn't copy the main_window, it just creates a new strong reference.

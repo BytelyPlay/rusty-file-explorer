@@ -4,8 +4,8 @@ use std::rc::Rc;
 use log::info;
 
 pub fn fs_entry_clicked(
-    _fs_entry: FsEntryData,
-    _main_window: Rc<AppContext>
+    entry: FsEntryData,
+    ctx: Rc<AppContext>
 ) {
-    info!("log")
+    info!("{}", entry.name)
 }
