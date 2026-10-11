@@ -1,12 +1,12 @@
 use crate::compiled_ui::FsEntryData;
-use crate::utils::RawFsEntryData::RawFsEntryData;
+use crate::utils::raw_fs_entry_data::RawFsEntryData;
 use crate::utils::slint_helpers::app_context::AppContext;
 use crate::utils::slint_helpers::display_error::display_error_in_result;
 use futures_util::FutureExt;
 use slint::Image;
 use std::fs::DirEntry;
 use std::path::PathBuf;
-use std::rc::{Rc, Weak};
+use std::rc::Rc;
 use tokio::io;
 
 /// Returns the first I/O error it gets, if it gets an error, otherwise it opens the folder.
@@ -42,29 +42,31 @@ pub async fn get_entries(folder: PathBuf) -> io::Result<Vec<RawFsEntryData>> {
 /// This opens a folder and handles any error that may appear.
 /// At the moment, it just panics, but later on it will show a popup window that shows the error.
 pub fn open_folder(folder: PathBuf, ctx: Rc<AppContext>) {
-    let weak_ctx = Rc::downgrade(&ctx);
+    let wrapper = ctx.as_wrapper();
 
     let future = get_entries(folder)
         .then(async move |result| {
             if let Some(data) = display_error_in_result(result) {
-                fill_file_state(data, weak_ctx);
+                display_error_in_result(
+                    wrapper.upgrade_on_slint_event_loop(
+                        |ctx| fill_file_state(
+                            data, ctx
+                        )
+                    )
+                );
             }
         });
     tokio::spawn(future);
 }
 
-fn fill_file_state(data: Vec<RawFsEntryData>, weak_ctx: Weak<AppContext>) {
-    display_error_in_result(weak_ctx.upgrade().unwrap().run_on_main_thread(
-        move |ctx| {
-            ctx.get_files().set_vec(data.iter()
-                .map(|raw| {
-                    FsEntryData {
-                        icon: Image::default(),
-                        name: raw.name.clone().into()
-                    }
-                })
-                .collect()
-            )
-        }
-    ));
+fn fill_file_state(data: Vec<RawFsEntryData>, ctx: AppContext) {
+    ctx.get_files().set_vec(data.iter()
+        .map(|raw| {
+            FsEntryData {
+                icon: Image::default(),
+                name: raw.name.clone().into()
+            }
+        })
+        .collect()
+    )
 }

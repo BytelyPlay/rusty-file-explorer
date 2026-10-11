@@ -1,17 +1,33 @@
 use crate::compiled_ui::{Callbacks, FsEntryData, MainWindow, State};
+use crate::utils::slint_helpers::app_context_raw_data::AppContextRawData;
+use crate::utils::slint_helpers::app_context_wrapper::AppContextWrapper;
 use crate::utils::slint_helpers::model_rc_accessors::ModelRcAccessor;
-use slint::{ComponentHandle, EventLoopError};
+use slint::ComponentHandle;
+use std::cell::RefCell;
+use std::path::PathBuf;
+use std::rc::Rc;
+use std::sync::{Arc, RwLock};
+
+pub type AppContextRawDataWrappedType = Arc<RwLock<AppContextRawData>>;
 
 /// This is basically just a wrapper for MainWindow, which is reference-counted.
 /// So in turn, when you clone AppContext. You just create a new reference to main_window.
 pub struct AppContext {
-    main_window: MainWindow
+    main_window: MainWindow,
+    raw_data: AppContextRawDataWrappedType
 }
 
 impl AppContext {
     pub fn new(main_window: MainWindow) -> Self {
         AppContext {
-            main_window
+            main_window,
+            raw_data: Arc::new(
+                RwLock::new(
+                    AppContextRawData {
+                        open_path: PathBuf::new()
+                    }
+                )
+            )
         }
     }
     pub fn get_callbacks(&self) -> Callbacks {
@@ -33,26 +49,42 @@ impl AppContext {
             )
         )
     }
-    pub fn run_on_main_thread(
-        &self, 
-        f: impl FnOnce(AppContext) + Send + 'static
-    ) -> Result<(), EventLoopError> {
-        self.main_window.as_weak().upgrade_in_event_loop(
-            move |window| {
-                f(
-                    AppContext::new(
-                        window
-                    )
-                );
-            }
+    /// This doesn't change anything other than the directory bar.
+    pub fn get_open_directory(&self) -> PathBuf {
+        self.raw_data
+            .write()
+            .unwrap()
+            .open_path
+            .clone()
+    }
+    /// This doesn't change anything other than the directory bar.
+    pub fn set_open_directory(&self, path: PathBuf) {
+        self.main_window.global::<State>()
+            .set_currently_open_directory(
+                path.as_path()
+                    .to_string_lossy()
+                    .to_string()
+                    .into()
+            );
+        self.raw_data
+            .write()
+            .unwrap()
+            .open_path = path;
+    }
+    pub fn as_wrapper(&self) -> AppContextWrapper {
+        AppContextWrapper::new(
+            self.main_window.as_weak(),
+            Arc::downgrade(&self.raw_data)
         )
     }
 }
 impl Clone for AppContext {
     /// This doesn't copy the main_window, it just creates a new strong reference.
+    /// Same thing with the raw data.
     fn clone(&self) -> Self {
         Self {
-            main_window: self.main_window.clone_strong()
+            main_window: self.main_window.clone_strong(),
+            raw_data: self.raw_data.clone()
         }
     }
 }
