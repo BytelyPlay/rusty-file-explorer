@@ -28,7 +28,7 @@ fn main() {
     );
 
     setup_callbacks(Rc::downgrade(&app_context));
-    fill_initial_files(app_context.as_ref());
+    fill_initial_files(app_context.as_ref().clone());
 
     main_window
         .run()
