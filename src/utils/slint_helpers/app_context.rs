@@ -1,6 +1,6 @@
 use crate::compiled_ui::{Callbacks, FsEntryData, MainWindow, State};
 use crate::utils::slint_helpers::model_rc_accessors::ModelRcAccessor;
-use slint::ComponentHandle;
+use slint::{ComponentHandle, EventLoopError};
 
 /// This is basically just a wrapper for MainWindow, which is reference-counted.
 /// So in turn, when you clone AppContext. You just create a new reference to main_window.
@@ -33,8 +33,19 @@ impl AppContext {
             )
         )
     }
-    pub fn run_on_main_thread(&self, f: impl FnOnce()) {
-
+    pub fn run_on_main_thread(
+        &self, 
+        f: impl FnOnce(AppContext) + Send + 'static
+    ) -> Result<(), EventLoopError> {
+        self.main_window.as_weak().upgrade_in_event_loop(
+            move |window| {
+                f(
+                    AppContext::new(
+                        window
+                    )
+                );
+            }
+        )
     }
 }
 impl Clone for AppContext {

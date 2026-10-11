@@ -10,7 +10,8 @@ use slint::ComponentHandle;
 use std::rc::Rc;
 use env_logger::Env;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     env_logger::init_from_env(
         Env::default()
             .default_filter_or(
@@ -28,7 +29,7 @@ fn main() {
     );
 
     setup_callbacks(Rc::downgrade(&app_context));
-    fill_initial_files(app_context.as_ref().clone());
+    fill_initial_files(app_context.clone());
 
     main_window
         .run()
