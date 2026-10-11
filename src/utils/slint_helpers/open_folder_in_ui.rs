@@ -49,6 +49,7 @@ pub fn open_folder(folder: PathBuf, ctx: Rc<AppContext>) {
             if let Some(data) = display_error_in_result(result) {
                 display_error_in_result(
                     wrapper.upgrade_on_slint_event_loop(
+                        // TODO: Update the open_directory thing.
                         |ctx| fill_file_state(
                             data, ctx
                         )
