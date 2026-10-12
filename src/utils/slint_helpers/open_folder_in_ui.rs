@@ -4,9 +4,10 @@ use crate::utils::slint_helpers::app_context::AppContext;
 use crate::utils::slint_helpers::display_error::display_error_in_result;
 use futures_util::FutureExt;
 use slint::Image;
-use std::fs::DirEntry;
 use std::path::PathBuf;
 use std::rc::Rc;
+use tokio::fs;
+use tokio::fs::DirEntry;
 use tokio::io;
 
 /// Returns the first I/O error it gets, if it gets an error, otherwise it opens the folder.
@@ -15,12 +16,24 @@ pub async fn get_entries(folder: PathBuf) -> io::Result<Vec<RawFsEntryData>> {
     File name couldn't be converted into a normal String\
     ";
 
-    let all_entries: Vec<io::Result<DirEntry>> = std::fs::read_dir(folder)?
-        .collect();
+    let mut all_entries: Vec<DirEntry> = vec![];
+
+    {
+        let mut read_dir = fs::read_dir(folder).await?;
+
+        loop {
+            if let Some(entry) = read_dir.next_entry().await? {
+                all_entries.push(entry);
+            } else {
+                break;
+            }
+        }
+    }
+
     let mut fs_entries: Vec<RawFsEntryData> = vec![];
 
     for entry in all_entries {
-        let os_str = entry?.file_name();
+        let os_str = entry.file_name();
         let os_str_as_str_result = os_str.to_str();
 
         let file_name: String;
