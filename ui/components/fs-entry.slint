@@ -1,11 +1,11 @@
 import { Button } from "std-widgets.slint";
 import { CustomButton } from "../custom-widgets/custom-button.slint";
-import { FsEntryData } from "../structs/fs-entry-data.slint";
+import { DisplayableFsEntryData } from "../structs/displayable-fs-entry-data.slint";
 
 export component FsEntry {
-    callback on_click(FsEntryData);
+    callback on_click(DisplayableFsEntryData);
 
-    in property <FsEntryData> fs_entry_data;
+    in property <DisplayableFsEntryData> displayable_fs_entry_data;
 
     // TODO: Add a property that specifies WHAT type of entry it is.
 
@@ -23,9 +23,9 @@ export component FsEntry {
         border: black;
         border_width: 1px;
 
-        icon: fs_entry_data.icon;
+        icon: displayable_fs_entry_data.icon;
 
-        on_click => on_click(fs_entry_data);
+        on_click => on_click(displayable_fs_entry_data);
     }
     Text {
         width: 100%;
@@ -36,7 +36,7 @@ export component FsEntry {
         x: 0;
         y: parent.height * 0.8;
 
-        text: fs_entry_data.name;
+        text: displayable_fs_entry_data.name;
         overflow: elide;
     }
 }

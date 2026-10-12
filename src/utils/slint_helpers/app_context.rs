@@ -1,18 +1,20 @@
-use crate::compiled_ui::{Callbacks, FsEntryData, MainWindow, State};
+use crate::compiled_ui::{Callbacks, DisplayableFsEntryData, MainWindow, State};
 use crate::utils::slint_helpers::app_context_raw_data::AppContextRawData;
 use crate::utils::slint_helpers::app_context_wrapper::AppContextWrapper;
 use crate::utils::slint_helpers::model_rc_accessors::ModelRcAccessor;
 use slint::ComponentHandle;
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, RwLock};
+use std::sync::{Arc, RwLock, Weak};
 
-pub type AppContextRawDataWrappedType = Arc<RwLock<AppContextRawData>>;
+pub type AppContextRawDataLock = RwLock<AppContextRawData>;
+pub type StrongAppContextRawData = Arc<AppContextRawDataLock>;
+pub type WeakAppContextRawData = Weak<AppContextRawDataLock>;
 
 /// This is basically just a wrapper for MainWindow, which is reference-counted.
 /// So in turn, when you clone AppContext. You just create a new reference to main_window.
 pub struct AppContext {
     main_window: MainWindow,
-    raw_data: AppContextRawDataWrappedType
+    raw_data: StrongAppContextRawData
 }
 
 impl AppContext {
@@ -30,7 +32,7 @@ impl AppContext {
     }
     pub fn new_with_raw_data(
         main_window: MainWindow,
-        raw_data: AppContextRawDataWrappedType
+        raw_data: StrongAppContextRawData
     ) -> Self {
         AppContext {
             main_window,
@@ -40,7 +42,7 @@ impl AppContext {
     pub fn get_callbacks(&self) -> Callbacks {
         self.main_window.global::<Callbacks>()
     }
-    pub fn get_files(&self) -> ModelRcAccessor<FsEntryData> {
+    pub fn get_files(&self) -> ModelRcAccessor<DisplayableFsEntryData> {
         // Stupid, but I kind of have to do this
         let cloned_self_1 = self.clone();
         let cloned_self_2 = self.clone();
@@ -60,6 +62,7 @@ impl AppContext {
     pub fn get_open_directory(&self) -> PathBuf {
         dbg!(self.raw_data
             .read()
+            // TODO: Don't unwrap
             .unwrap()
             .open_path
             .clone())
@@ -74,6 +77,7 @@ impl AppContext {
             );
         self.raw_data
             .write()
+            // TODO: Don't unwrap
             .unwrap()
             .open_path = dbg!(path.to_path_buf());
     }

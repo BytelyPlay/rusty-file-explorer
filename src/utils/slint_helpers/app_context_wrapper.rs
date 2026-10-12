@@ -1,15 +1,13 @@
 use crate::compiled_ui::MainWindow;
 use crate::utils::slint_helpers::app_context::AppContext;
-use crate::utils::slint_helpers::app_context_raw_data::AppContextRawData;
+use crate::utils::slint_helpers::app_context::WeakAppContextRawData;
 use slint::{EventLoopError, Weak};
-use std::sync;
-use std::sync::RwLock;
 
 /// This is basically just AppContext, but with the Send trait.
 /// Just made for the upgrade_on_slint_event_loop function.
 pub struct AppContextWrapper {
     weak_main_window: Weak<MainWindow>,
-    raw_data: sync::Weak<RwLock<AppContextRawData>>
+    raw_data: WeakAppContextRawData
 }
 
 impl AppContextWrapper {
@@ -35,7 +33,7 @@ impl AppContextWrapper {
     }
     pub fn new(
         weak_main_window: Weak<MainWindow>,
-        raw_data: std::sync::Weak<RwLock<AppContextRawData>>
+        raw_data: WeakAppContextRawData
     ) -> Self {
         AppContextWrapper {
             weak_main_window,

@@ -2,7 +2,7 @@ use std::rc::Rc;
 use log::{error, warn};
 use crate::callbacks::file_ops_callbacks;
 
-use crate::compiled_ui::{FsEntryData};
+use crate::compiled_ui::{DisplayableFsEntryData};
 use crate::utils::slint_helpers::app_context::AppContext;
 
 pub fn setup_callbacks(weak_ctx: std::rc::Weak<AppContext>) {
@@ -18,7 +18,7 @@ pub fn setup_callbacks(weak_ctx: std::rc::Weak<AppContext>) {
 fn setup_callbacks_internal(ctx: Rc<AppContext>) {
     let weak_ctx = Rc::downgrade(&ctx);
 
-    let closure = move |fs_entry: FsEntryData| {
+    let closure = move |fs_entry: DisplayableFsEntryData| {
         if let Some(app_context) = ctx_as_strong_or_log_for_callback(
             &weak_ctx
         ) {

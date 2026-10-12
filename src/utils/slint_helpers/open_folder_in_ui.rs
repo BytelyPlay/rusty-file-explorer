@@ -1,5 +1,5 @@
-use crate::compiled_ui::FsEntryData;
-use crate::utils::raw_fs_entry_data::RawFsEntryData;
+use crate::compiled_ui::DisplayableFsEntryData;
+use crate::utils::fs_entry_data::FsEntryData;
 use crate::utils::slint_helpers::app_context::AppContext;
 use crate::utils::slint_helpers::display_error::display_error_in_result;
 use futures_util::FutureExt;
@@ -11,7 +11,7 @@ use tokio::fs::DirEntry;
 use tokio::io;
 
 /// Returns the first I/O error it gets, if it gets an error, otherwise it opens the folder.
-pub async fn get_entries(folder: PathBuf) -> io::Result<Vec<RawFsEntryData>> {
+pub async fn get_entries(folder: PathBuf) -> io::Result<Vec<FsEntryData>> {
     const DEFAULT_FILE_NAME: &str = "\
     File name couldn't be converted into a normal String\
     ";
@@ -30,7 +30,7 @@ pub async fn get_entries(folder: PathBuf) -> io::Result<Vec<RawFsEntryData>> {
         }
     }
 
-    let mut fs_entries: Vec<RawFsEntryData> = vec![];
+    let mut fs_entries: Vec<FsEntryData> = vec![];
 
     for entry in all_entries {
         let os_str = entry.file_name();
@@ -44,7 +44,7 @@ pub async fn get_entries(folder: PathBuf) -> io::Result<Vec<RawFsEntryData>> {
         }
 
         fs_entries.push(
-            RawFsEntryData {
+            FsEntryData {
                 name: file_name
             }
         );
@@ -79,10 +79,10 @@ pub fn open_folder(folder: PathBuf, ctx: Rc<AppContext>) {
     tokio::spawn(future);
 }
 
-fn fill_file_state(data: Vec<RawFsEntryData>, ctx: AppContext) {
+fn fill_file_state(data: Vec<FsEntryData>, ctx: AppContext) {
     ctx.get_files().set_vec(data.iter()
         .map(|raw| {
-            FsEntryData {
+            DisplayableFsEntryData {
                 icon: Image::default(),
                 name: raw.name.clone().into()
             }

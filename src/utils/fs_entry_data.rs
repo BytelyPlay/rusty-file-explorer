@@ -1,15 +1,15 @@
 use slint::Image;
-use crate::compiled_ui::FsEntryData;
+use crate::compiled_ui::DisplayableFsEntryData;
 
-pub struct RawFsEntryData {
+pub struct FsEntryData {
     // TODO: Figure out the icon. It should support raw RGBA or SVGs or PNGs. An enum would probably help.
     // pub icon: Vec<u8>,
     pub name: String
 }
 
-impl RawFsEntryData {
-    pub fn convert_to_fs_entry_data(self) -> FsEntryData {
-        FsEntryData {
+impl FsEntryData {
+    pub fn convert_to_displayable_fs_entry_data(self) -> DisplayableFsEntryData {
+        DisplayableFsEntryData {
             icon: Image::default(),
             name: self.name.into()
         }
