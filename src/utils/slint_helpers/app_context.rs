@@ -39,6 +39,8 @@ impl AppContext {
             raw_data
         }
     }
+}
+impl AppContext {
     pub fn get_callbacks(&self) -> Callbacks {
         self.main_window.global::<Callbacks>()
     }
@@ -67,6 +69,8 @@ impl AppContext {
             .open_path
             .clone())
     }
+}
+impl AppContext {
     /// This doesn't change anything other than the directory bar.
     pub fn set_open_directory(&self, path: &Path) {
         self.main_window.global::<State>()
@@ -81,6 +85,8 @@ impl AppContext {
             .unwrap()
             .open_path = dbg!(path.to_path_buf());
     }
+}
+impl AppContext {
     pub fn as_wrapper(&self) -> AppContextWrapper {
         AppContextWrapper::new(
             self.main_window.as_weak(),
