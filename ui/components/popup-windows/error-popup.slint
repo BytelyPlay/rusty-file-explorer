@@ -1,0 +1,17 @@
+import { ScrollView } from "std-widgets.slint";
+
+export component ErrorPopup inherits PopupWindow {
+    in property <string> error_message;
+
+    height: 250px;
+    width: 250px;
+
+    close-policy: no-auto-close;
+
+    ScrollView {
+        Text {
+            text: error_message;
+            font-size: 12px;
+        }
+    }
+}
