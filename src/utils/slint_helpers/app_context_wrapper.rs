@@ -14,13 +14,21 @@ pub struct AppContextWrapper {
 
 impl AppContextWrapper {
     pub fn upgrade_on_slint_event_loop(
-        &self,
+        self,
         f: impl FnOnce(AppContext) + Send + 'static
     ) -> Result<(), EventLoopError> {
-        self.weak_main_window.upgrade_in_event_loop(|main_window| {
+        self.weak_main_window.upgrade_in_event_loop(move |main_window| {
+            let opt_raw_data = self.raw_data.upgrade();
+
+            if let None = opt_raw_data {
+                // TODO: Handle this
+                todo!()
+            }
+
             f(
-                AppContext::new(
-                    main_window
+                AppContext::new_with_raw_data(
+                    main_window,
+                    opt_raw_data.unwrap()
                 )
             )
         })
@@ -33,5 +41,14 @@ impl AppContextWrapper {
             weak_main_window,
             raw_data,
         }
+    }
+}
+
+impl Clone for AppContextWrapper {
+    fn clone(&self) -> Self {
+        Self::new(
+            self.weak_main_window.clone(),
+            self.raw_data.clone()
+        )
     }
 }

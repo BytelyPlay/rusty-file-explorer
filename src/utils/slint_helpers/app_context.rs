@@ -3,9 +3,7 @@ use crate::utils::slint_helpers::app_context_raw_data::AppContextRawData;
 use crate::utils::slint_helpers::app_context_wrapper::AppContextWrapper;
 use crate::utils::slint_helpers::model_rc_accessors::ModelRcAccessor;
 use slint::ComponentHandle;
-use std::cell::RefCell;
-use std::path::PathBuf;
-use std::rc::Rc;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, RwLock};
 
 pub type AppContextRawDataWrappedType = Arc<RwLock<AppContextRawData>>;
@@ -19,15 +17,24 @@ pub struct AppContext {
 
 impl AppContext {
     pub fn new(main_window: MainWindow) -> Self {
-        AppContext {
+        Self::new_with_raw_data(
             main_window,
-            raw_data: Arc::new(
+            Arc::new(
                 RwLock::new(
                     AppContextRawData {
                         open_path: PathBuf::new()
                     }
                 )
             )
+        )
+    }
+    pub fn new_with_raw_data(
+        main_window: MainWindow,
+        raw_data: AppContextRawDataWrappedType
+    ) -> Self {
+        AppContext {
+            main_window,
+            raw_data
         }
     }
     pub fn get_callbacks(&self) -> Callbacks {
@@ -51,25 +58,24 @@ impl AppContext {
     }
     /// This doesn't change anything other than the directory bar.
     pub fn get_open_directory(&self) -> PathBuf {
-        self.raw_data
-            .write()
+        dbg!(self.raw_data
+            .read()
             .unwrap()
             .open_path
-            .clone()
+            .clone())
     }
     /// This doesn't change anything other than the directory bar.
-    pub fn set_open_directory(&self, path: PathBuf) {
+    pub fn set_open_directory(&self, path: &Path) {
         self.main_window.global::<State>()
             .set_currently_open_directory(
-                path.as_path()
-                    .to_string_lossy()
+                path.to_string_lossy()
                     .to_string()
                     .into()
             );
         self.raw_data
             .write()
             .unwrap()
-            .open_path = path;
+            .open_path = dbg!(path.to_path_buf());
     }
     pub fn as_wrapper(&self) -> AppContextWrapper {
         AppContextWrapper::new(

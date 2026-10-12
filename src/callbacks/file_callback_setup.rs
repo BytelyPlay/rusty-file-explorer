@@ -23,7 +23,7 @@ fn setup_callbacks_internal(ctx: Rc<AppContext>) {
             &weak_ctx
         ) {
             file_ops_callbacks::fs_entry_clicked(
-                fs_entry, app_context.clone()
+                &fs_entry, app_context.clone()
             );
         }
     };

@@ -44,15 +44,21 @@ pub async fn get_entries(folder: PathBuf) -> io::Result<Vec<RawFsEntryData>> {
 pub fn open_folder(folder: PathBuf, ctx: Rc<AppContext>) {
     let wrapper = ctx.as_wrapper();
 
-    let future = get_entries(folder)
+    let folder_clone = folder.clone();
+
+    let future = get_entries(folder.clone())
         .then(async move |result| {
             if let Some(data) = display_error_in_result(result) {
                 display_error_in_result(
                     wrapper.upgrade_on_slint_event_loop(
                         // TODO: Update the open_directory thing.
-                        |ctx| fill_file_state(
-                            data, ctx
-                        )
+                        move |ctx| {
+                            ctx.set_open_directory(folder_clone.as_path());
+
+                            fill_file_state(
+                                data, ctx
+                            );
+                        }
                     )
                 );
             }

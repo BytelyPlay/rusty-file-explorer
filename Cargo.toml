@@ -15,3 +15,9 @@ futures-util = "=0.3.34"
 [build-dependencies]
 slint-build = "1.18.1"
 constcat = "=0.6.1"
+
+[profile.release]
+panic = "abort"
+
+[profile.dev]
+panic = "abort"
