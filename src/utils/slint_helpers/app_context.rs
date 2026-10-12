@@ -62,12 +62,12 @@ impl AppContext {
     }
     /// This doesn't change anything other than the directory bar.
     pub fn get_open_directory(&self) -> PathBuf {
-        dbg!(self.raw_data
+        self.raw_data
             .read()
             // TODO: Don't unwrap
             .unwrap()
             .open_path
-            .clone())
+            .clone()
     }
 }
 impl AppContext {
@@ -83,7 +83,7 @@ impl AppContext {
             .write()
             // TODO: Don't unwrap
             .unwrap()
-            .open_path = dbg!(path.to_path_buf());
+            .open_path = path.to_path_buf();
     }
 }
 impl AppContext {
