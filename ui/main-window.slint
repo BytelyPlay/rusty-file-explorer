@@ -4,8 +4,9 @@ import { DisplayableFsEntryData } from "structs/displayable-fs-entry-data.slint"
 import { FilesBox } from "components/files-box.slint";
 import { Callbacks } from "globals/callbacks.slint";
 import { State } from "globals/state.slint";
+import { ErrorDialog } from "components/dialogs/error-dialog.slint";
 
-export { DisplayableFsEntryData, FilesBox, Callbacks, State }
+export { DisplayableFsEntryData, FilesBox, Callbacks, State, ErrorDialog }
 
 export component MainWindow inherits Window {
     preferred-height: 540px;

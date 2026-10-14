@@ -1,0 +1,25 @@
+import { ScrollView, StandardButton } from "std-widgets.slint";
+
+export component ErrorDialog inherits Dialog {
+    in property <string> error_message;
+
+    height: 250px;
+    width: 250px;
+
+    ScrollView {
+        height: 10%;
+        width: 10%;
+        
+        Text {
+            height: 100%;
+            width: 100%;
+
+            text: "An error has occurred: " + error_message;
+            font-size: 12px;
+        }
+    }
+    StandardButton {
+        kind: ok;
+    }
+
+}
