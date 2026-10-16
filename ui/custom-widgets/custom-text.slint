@@ -1,0 +1,13 @@
+export component CustomText {
+    in property <length> border-width <=> rect.border-width;
+    in property <brush> border-color <=> rect.border-color;
+    in property <length> border-radius <=> rect.border-radius;
+
+    in property <string> font-family <=> text.font-family;
+    in property <length> font-size <=> text.font-size;
+    in property <string> text <=> text.text;
+
+    rect := Rectangle {
+        text := Text {}
+    }
+}

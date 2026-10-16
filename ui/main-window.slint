@@ -7,6 +7,8 @@ import { FilesBox } from "components/files-box.slint";
 import { Callbacks } from "globals/callbacks.slint";
 import { State } from "globals/state.slint";
 import { ErrorDialog } from "components/dialogs/error-dialog.slint";
+import { CustomText } from "custom-widgets/custom-text.slint";
+import { ScrollView, TextEdit, LineEdit } from "std-widgets.slint";
 
 export { DisplayableFsEntryData, FilesBox, Callbacks, State, ErrorDialog }
 export component MainWindow inherits Window {
@@ -21,26 +23,53 @@ export component MainWindow inherits Window {
         width: 100%;
 
         padding: 0;
-        spacing: 0;
+        spacing: 2px;
 
-        Text {
-            height: 5%;
-            width: 100%;
+        Rectangle {
+            height: 24px;
+            width: parent.width - 4px;
 
-            font-size: 18px;
+            border-width: 4px;
+            border-color: gray;
 
-            text: State.currently_open_directory;
+            border-radius: Theme.round_corner_border_radius;
+
+            z: 2;
+
+            edit_dir := LineEdit {
+                height: parent.height - 4px;
+                width: parent.width - 4px;
+
+                input-method-hints: {
+                    capitalization: CapitalizationMode.none,
+                    auto-correct: false,
+                    auto-complete: false
+                };
+
+                x: 4px;
+                z: 1;
+
+                font-size: 12px;
+
+                text: State.currently_open_directory;
+
+                accepted(text) => {
+                    edit_dir.clear-focus();
+                    Callbacks.directory_updated(text);
+                }
         }
+    }
 
-        FilesBox {
-            height: 80%;
-            width: 80%;
+    FilesBox {
+        height: 80%;
+        width: 80%;
 
-            // x: parent.width - self.width;
+        // x: parent.width - self.width;
             // y: parent.height - self.height;
 
             files: State.files;
-            fs_entry_clicked(data) => Callbacks.fs_entry_clicked(data);
-        }
+        fs_entry_clicked(data) => Callbacks.fs_entry_clicked(data);
     }
+}
+
 }
