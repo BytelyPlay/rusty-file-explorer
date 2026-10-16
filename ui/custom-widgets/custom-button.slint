@@ -7,13 +7,19 @@ export component CustomButton {
 
     in property <brush> background;
     in property <image> icon <=> button_icon.source;
+
     // This isn't very clear, should it do stuff when it is hovered? If true, it will do stuff, if not, it won't.
     // It was made so that for the people who want to have custom behavior.
     in property <bool> should_react_on_hover: true;
+
     in property <brush> border <=> rect.border-color;
     in property <length> border_width <=> rect.border-width;
     in property <length> border_radius: Theme.round_corner_border_radius;
 
+    in property <string> text <=> button_text.text;
+    in property <length> font_size <=> button_text.font-size;
+    in property <string> font_family <=> button_text.font-family;
+    
     out property <bool> is_hovered <=> touch.has-hover;
 
     rect := Rectangle {
@@ -22,19 +28,25 @@ export component CustomButton {
 
         border-radius: border_radius;
 
-        background: is_hovered && should_react_on_hover ? 
-        parent.background.darker(0.1) : 
-        parent.background;
-    }
+        background: is_hovered && should_react_on_hover ?
+            parent.background.darker(0.1) :
+            parent.background;
 
-    button_icon := Image {
-        height: 100%;
-        width: 100%;
-    }
-    touch := TouchArea {
-        height: 100%;
-        width: 100%;
-        
-        mouse-cursor: is_hovered ? MouseCursor.pointer : MouseCursor.default;
+        button_icon := Image {
+            height: 100%;
+            width: 100%;
+        }
+
+        touch := TouchArea {
+            height: 100%;
+            width: 100%;
+
+            mouse-cursor: is_hovered ? MouseCursor.pointer : MouseCursor.default;
+        }
+
+        button_text := Text {
+            height: 100%;
+            width: 100%;
+        }
     }
 }

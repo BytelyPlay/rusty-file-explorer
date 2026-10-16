@@ -1,7 +1,7 @@
 use crate::compiled_ui::DisplayableFsEntryData;
 use crate::utils::fs_entry_data::FsEntryData;
 use crate::utils::slint_helpers::app_context::AppContext;
-use crate::utils::slint_helpers::display_error::display_error_in_result;
+use crate::utils::slint_helpers::display_error::display_error_in_result_async;
 use futures_util::FutureExt;
 use slint::Image;
 use std::path::PathBuf;
@@ -61,9 +61,9 @@ pub fn open_folder(folder: PathBuf, ctx: Rc<AppContext>) {
 
     let future = get_entries(folder.clone())
         .then(async move |result| {
-            if let Some(data) = display_error_in_result(result) {
-                display_error_in_result(
-                    wrapper.upgrade_on_slint_event_loop(
+            if let Some(data) = display_error_in_result_async(result, wrapper.clone()) {
+                display_error_in_result_async(
+                    wrapper.clone().upgrade_on_slint_event_loop(
                         // TODO: Update the open_directory thing.
                         move |ctx| {
                             ctx.set_open_directory(folder_clone.as_path());
@@ -72,7 +72,8 @@ pub fn open_folder(folder: PathBuf, ctx: Rc<AppContext>) {
                                 data, ctx
                             );
                         }
-                    )
+                    ),
+                    wrapper.clone()
                 );
             }
         });

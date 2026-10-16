@@ -1,10 +1,11 @@
-use crate::compiled_ui::{Callbacks, DisplayableFsEntryData, MainWindow, State};
+use crate::compiled_ui::{Callbacks, DisplayableFsEntryData, ErrorDialog, MainWindow, State};
 use crate::utils::slint_helpers::app_context_raw_data::AppContextRawData;
 use crate::utils::slint_helpers::app_context_wrapper::AppContextWrapper;
 use crate::utils::slint_helpers::model_rc_accessors::ModelRcAccessor;
 use slint::ComponentHandle;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, RwLock, Weak};
+use futures_util::future::err;
 
 pub type AppContextRawDataLock = RwLock<AppContextRawData>;
 pub type StrongAppContextRawData = Arc<AppContextRawDataLock>;
@@ -84,6 +85,28 @@ impl AppContext {
             // TODO: Don't unwrap
             .unwrap()
             .open_path = path.to_path_buf();
+    }
+}
+impl AppContext {
+    pub fn show_error_popup(&self, error_msg: String) {
+        let error_dialog_result =
+            ErrorDialog::new();
+
+        // I don't know of a better way to handle this error.
+        if let Err(err) = error_dialog_result {
+            panic!("Error occurred in display_error_in_result(): {}", err);
+        }
+        let error_dialog = error_dialog_result.unwrap();
+
+        error_dialog.set_error_message(
+            error_msg.into()
+        );
+
+        error_dialog
+            .show()
+            .expect(
+                "Couldn't run error_dialog.show()"
+            );
     }
 }
 impl AppContext {

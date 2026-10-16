@@ -1,14 +1,15 @@
-import { ScrollView, StandardButton } from "std-widgets.slint";
+import { ScrollView, StandardButton, Button } from "std-widgets.slint";
+import { CustomButton } from "../../custom-widgets/custom-button.slint";
 
 export component ErrorDialog inherits Dialog {
     in property <string> error_message;
 
-    height: 250px;
-    width: 250px;
+    preferred-height: 250px;
+    preferred-width: 300px;
 
     ScrollView {
-        height: 10%;
-        width: 10%;
+        height: 80%;
+        width: 100%;
         
         Text {
             height: 100%;
@@ -21,5 +22,4 @@ export component ErrorDialog inherits Dialog {
     StandardButton {
         kind: ok;
     }
-
 }
