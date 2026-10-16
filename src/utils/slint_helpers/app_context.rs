@@ -6,6 +6,7 @@ use slint::ComponentHandle;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, RwLock, Weak};
 use futures_util::future::err;
+use log::warn;
 
 pub type AppContextRawDataLock = RwLock<AppContextRawData>;
 pub type StrongAppContextRawData = Arc<AppContextRawDataLock>;
@@ -97,9 +98,26 @@ impl AppContext {
             panic!("Error occurred in display_error_in_result(): {}", err);
         }
         let error_dialog = error_dialog_result.unwrap();
+        let weak_error_dialog = error_dialog.as_weak();
 
         error_dialog.set_error_message(
             error_msg.into()
+        );
+
+        error_dialog.on_ok_clicked(
+            move || {
+                let opt_dialog = weak_error_dialog.upgrade();
+
+                if let Some(dialog) = opt_dialog {
+                    dialog.hide()
+                        .expect(
+                            "dialog.hide() didn't work when \
+                            ok_clicked was called."
+                        );
+                } else {
+                    warn!("ErrorDialog doesn't exist anymore when the callback ok_clicked was called.")
+                }
+            }
         );
 
         error_dialog
